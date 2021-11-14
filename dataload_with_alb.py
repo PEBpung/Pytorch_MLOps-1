@@ -1,5 +1,4 @@
 import torch
-from torch._C import device
 from torchvision import transforms
 
 import time
@@ -33,14 +32,14 @@ class DiseaseDataset(object):
                 #         A.GaussNoise(p=0.2),
                 #         A.MultiplicativeNoise(p=0.2),
                 #         ], p=0.2),
-                A.Normalize(mean=(0.485), std=(0.229)),
+                A.Normalize(mean=(0.6251), std=(0.2716)),
                 transforms.ToTensorV2()
             ])
         
         elif self.mode == 'val':
             self.transforms = A.Compose([
                 A.Resize(self.image_size, self.image_size),
-                A.Normalize(mean=0.5, std=0.5),
+                A.Normalize(mean=(0.6251), std=(0.2716)),
                 transforms.ToTensorV2()
             ])
         ##########################전처리 코드 끝############################
@@ -104,7 +103,7 @@ if __name__ == '__main__':
 
     train_data_dir = os.path.join(os.getcwd(), "RSNA_COVID_png_512", "train")
     train_dataset = DiseaseDataset(train_data_dir, 512, 8, num_classes, classes_name, 'img', 'train')
-    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=4, num_workers=0)
+    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=25, num_workers=0)
 
     #For shape test
     for imgs, labels in iter(dataloader):

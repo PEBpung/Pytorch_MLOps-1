@@ -32,14 +32,14 @@ class DiseaseDataset(object):
                 #         A.GaussNoise(p=0.2),
                 #         A.MultiplicativeNoise(p=0.2),
                 #         ], p=0.2),
-                A.Normalize(mean=(0.6251), std=(0.2716)),
+                A.Normalize(mean=(0.485), std=(0.229)),
                 transforms.ToTensorV2()
             ])
         
         elif self.mode == 'val':
             self.transforms = A.Compose([
                 A.Resize(self.image_size, self.image_size),
-                A.Normalize(mean=(0.6251), std=(0.2716)),
+                A.Normalize(mean=(0.485), std=(0.229)),
                 transforms.ToTensorV2()
             ])
         ##########################전처리 코드 끝############################
@@ -55,6 +55,11 @@ class DiseaseDataset(object):
         
     def __len__(self):
         return len(self.imgs)
+
+    def callback_get_label(dataset, idx):
+        #callback function used in imbalanced dataset loader.
+        input, target = dataset[idx]
+        return target.nonzero().item()
 
     def __getitem__(self, idx):
         #train or val dataset path + 폴더명(=클래스명) + 파일명

@@ -1,57 +1,31 @@
 import math
+import torch
 
-hyperparameter_defaults  = {
-        'epochs': 30,
-        'batch_size': 3,
-        #'fc_layer_size': 128,
-        #'weight_decay': 0.0005,
-        #'learning_rate': 1e-3,
-        #'activation': 'relu',
-        #'optimizer': 'adam',
-        #'seed': 42
-    }
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 sweep_config = {
-    'method': 'bayes',
-    'project': "test", 
-    'entity': 'douner89',
+    'method': 'grid',
+    'name':'grid-wrong_model_test',
     'metric' : {
-        'name': 'val_epoch_loss',
-        'goal': 'minimize'   
+        'name': 'best_acc',
+        'goal': 'maximize'   
         },
     'parameters' : {
+        'epochs': {
+            'value' : 30},
+        'batch_size': {
+            'value' : 25},
         'model': {
-            'values' : ['resnet', 'effnet']  #'value' : 'resnet', ['resnet', 'scratch', 'effnet'] 
-        },
-        'optimizer': {
-            'values': ['adam', 'sgd', 'adabelief']
-            },
+            'values': ['Wrong_resnet', 'resnet']}, #'values' : ['resnet', 'scratch'] 
+        'optimizer': { 
+            'value': 'adabelief'},#'values': ['adam', 'sgd', 'adabelief']
         'warm_up':{
-            'values': ['yes', 'no']
-        },
+            'value': 'no'}, #'values': ['yes', 'no']
         'seed':{
-            'values': [0, 3407]
-        },
-        ##여러 줄 주석 추가: ctrl+K+C 동시에 누르기
-        ##여러줄 주석 해제: ctrl+K+U 동시에 누르기
-        # 'dropout': {
-        #     'values': [0.3, 0.4, 0.5]
-        #     },
+            'value': 0},#'values': [0, 3407]
         'learning_rate': {
-            'values': [0.001, 0.005]
-            },
-        #'batch_size': {
-        #    'distribution': 'q_log_uniform',
-        #    'q': 1,
-        #    'min': math.log(16),
-        #    'max': math.log(32),
-        #    },
-        # 'data_augmentation1': {
-        #     'values': ['brightness', 'no_aug']
-        # },
-        # 'data_augmentation2': {
-        #     'values': ['contrast', 'no_aug']
-        # },
+            'value': 0.005},#'values': [0.001, 0.005]
+
     },
     'early_terminate':{
         'type': 'hyperband',
